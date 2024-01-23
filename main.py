@@ -6,16 +6,14 @@ import BusinessLogic
 
 # Контроллер бизнесс логики.
 def work():
-    # global button_click_status
-    # while button_click_status:
-    #     print("Working....")
-    #     sleep(5)
-    try:
-        BusinessLogic.check_network_connection()
+    global button_click_status
+    # try:
+    BusinessLogic.check_network_connection()
+    while button_click_status:
         symbol = "BTC/USDT"
         BusinessLogic.fetch_volume(symbol)
-    except Exception as e:
-        status_label.config(text=f"{e}", fg="red")
+    # except Exception as e:
+    #     status_label.config(text=f"{e}", fg="red")
 
 
 # Действия при нажатии на кнопку.

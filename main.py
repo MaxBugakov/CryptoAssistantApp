@@ -3,17 +3,21 @@ import threading
 from time import sleep
 import BusinessLogic
 
+from telegram import Update
+from telegram.ext import Updater, CommandHandler, CallbackContext
+
+from telegram import Bot
 
 # Контроллер бизнесс логики.
 def work():
     global button_click_status
-    # try:
-    BusinessLogic.check_network_connection()
-    while button_click_status:
-        symbol = "BTC/USDT"
-        BusinessLogic.fetch_volume(symbol)
-    # except Exception as e:
-    #     status_label.config(text=f"{e}", fg="red")
+    try:
+        BusinessLogic.check_network_connection()
+        while button_click_status:
+            symbol = "BTC/USDT"
+            BusinessLogic.fetch_volume(symbol)
+    except Exception as e:
+        status_label.config(text=f"{e}", fg="red")
 
 
 # Действия при нажатии на кнопку.
@@ -50,6 +54,13 @@ button_click_status = False
 worker_thread = None
 
 
+def bot_messege_set(textt):
+    bot.send_message(chat_id, text=textt)
+
+bot_token = '6500188821:AAET5x2AOab8toa31NiL2V_u3LuOKhkXSBA'
+bot = Bot(token=bot_token)
+chat_id = '1180171947'
+
 # Main.
 if __name__ == "__main__":
     # Создание окна.
@@ -79,3 +90,9 @@ if __name__ == "__main__":
 
     win.protocol("WM_DELETE_WINDOW", on_closing)
     win.mainloop()
+
+
+
+
+
+

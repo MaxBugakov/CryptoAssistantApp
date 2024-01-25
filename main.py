@@ -2,10 +2,6 @@ import tkinter as tk
 import threading
 from time import sleep
 import BusinessLogic
-
-from telegram import Update
-from telegram.ext import Updater, CommandHandler, CallbackContext
-
 from telegram import Bot
 
 # Контроллер бизнесс логики.

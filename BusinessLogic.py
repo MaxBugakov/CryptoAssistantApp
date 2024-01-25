@@ -2,7 +2,6 @@ import socket
 import ccxt
 from datetime import datetime
 from time import sleep
-
 import main
 
 

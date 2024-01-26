@@ -7,13 +7,13 @@ from telegram import Bot
 # Контроллер бизнесс логики.
 def work():
     global button_click_status
-    try:
-        BusinessLogic.check_network_connection()
-        while button_click_status:
-            symbol = "BTC/USDT"
-            BusinessLogic.fetch_volume(symbol)
-    except Exception as e:
-        status_label.config(text=f"{e}", fg="red")
+    # try:
+    BusinessLogic.check_network_connection()
+    while button_click_status:
+        symbol = "BTC/USDT"
+        BusinessLogic.fetch_volume(symbol)
+    # except Exception as e:
+    #     status_label.config(text=f"{e}", fg="red")
 
 
 # Действия при нажатии на кнопку.

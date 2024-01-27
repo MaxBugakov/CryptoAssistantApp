@@ -3,17 +3,31 @@ import threading
 from time import sleep
 import BusinessLogic
 from telegram import Bot
+import ccxt
+
 
 # Контроллер бизнесс логики.
 def work():
     global button_click_status
-    # try:
-    BusinessLogic.check_network_connection()
-    while button_click_status:
-        symbol = "BTC/USDT"
-        BusinessLogic.fetch_volume(symbol)
-    # except Exception as e:
-    #     status_label.config(text=f"{e}", fg="red")
+    iteration_counter = 0
+    while True:
+        try:
+            if (button_click_status == False):
+                break
+            exchange = ccxt.binance()
+            BusinessLogic.check_network_connection()
+            while button_click_status:
+                symbol = "BTC/USDT"
+                BusinessLogic.fetch_volume(symbol, exchange, iteration_counter)
+                iteration_counter += 1
+        except Exception as e:
+            # status_label.config(text=f"{e}", fg="red")
+            print("--------------------------------------")
+            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+            print(f"{e}")
+            print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+            print("--------------------------------------")
+            bot_messege_set(f"Произошла ошибка: {e}")
 
 
 # Действия при нажатии на кнопку.
@@ -59,6 +73,11 @@ chat_id = '1180171947'
 
 # Main.
 if __name__ == "__main__":
+    textt = "Программа начала работать"
+    bot_token = '6500188821:AAET5x2AOab8toa31NiL2V_u3LuOKhkXSBA'
+    bot = Bot(token=bot_token)
+    chat_id = '1180171947'
+    bot.send_message(chat_id, text=textt)
     # Создание окна.
     win = tk.Tk()
     logo = tk.PhotoImage(file="logo.png")
@@ -86,7 +105,6 @@ if __name__ == "__main__":
 
     win.protocol("WM_DELETE_WINDOW", on_closing)
     win.mainloop()
-
 
 
 

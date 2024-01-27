@@ -65,19 +65,16 @@ worker_thread = None
 
 
 def bot_messege_set(textt):
-    bot.send_message(chat_id, text=textt)
-
-bot_token = '6500188821:AAET5x2AOab8toa31NiL2V_u3LuOKhkXSBA'
-bot = Bot(token=bot_token)
-chat_id = '1180171947'
-
-# Main.
-if __name__ == "__main__":
-    textt = "Программа начала работать"
     bot_token = '6500188821:AAET5x2AOab8toa31NiL2V_u3LuOKhkXSBA'
     bot = Bot(token=bot_token)
     chat_id = '1180171947'
     bot.send_message(chat_id, text=textt)
+
+
+
+# Main.
+if __name__ == "__main__":
+    bot_messege_set("Программа начала работать")
     # Создание окна.
     win = tk.Tk()
     logo = tk.PhotoImage(file="logo.png")

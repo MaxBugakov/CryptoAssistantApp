@@ -20,10 +20,10 @@ def check_network_connection():
 
 # Получение данных.
 def fetch_volume(symbol, exchange, iteration_counter):
-    print(iteration_counter)
-    if (iteration_counter % 20 == 0):
-        main.bot_messege_set("Прошло 20 минут")
-        print("Бот отправил: Прошло 20 минут")
+    # print(iteration_counter)
+    # if (iteration_counter % 20 == 0):
+    #     main.bot_messege_set("Прошло 20 минут")
+    #     print("Бот отправил: Прошло 20 минут")
     timeframe = '1m'
     summ = 0
     print("-----Последние 6 свечек-----")
@@ -60,7 +60,7 @@ def fetch_volume(symbol, exchange, iteration_counter):
                 print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
                 print(f"BTC/USDT \n Средний объём: {average_volume_5}   Объём на последней свече: {volume} \n Объём вырос в {volume / average_volume_5} раза")
                 print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-                bot_message = f"BTC/USDT\nВремя: {datetime.fromtimestamp(candles[0][0] / 1000.0)}\nСредний объём 5: {average_volume_5}\nОбъём: {volume}\nОбъём вырос в {volume / average_volume_5} раза"
+                bot_message = f"BTC/USDT\nВремя: {datetime.fromtimestamp(candles[0][0] / 1000.0)}\nСредний объём: {round(average_volume_5, 2)}\nОбъём последней свечи: {round(volume, 2)}\nОбъём вырос в {round(volume / average_volume_5, 2)} раза"
                 print("Bot is ready")
                 main.bot_messege_set(bot_message)
                 print("Bot has sent message")

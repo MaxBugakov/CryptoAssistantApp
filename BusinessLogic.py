@@ -1,5 +1,4 @@
 import socket
-import ccxt
 from datetime import datetime
 from time import sleep
 import main
@@ -19,11 +18,7 @@ def check_network_connection():
 
 
 # Получение данных.
-def fetch_volume(symbol, exchange, iteration_counter):
-    # print(iteration_counter)
-    # if (iteration_counter % 20 == 0):
-    #     main.bot_messege_set("Прошло 20 минут")
-    #     print("Бот отправил: Прошло 20 минут")
+def fetch_volume(symbol, exchange):
     timeframe = '1m'
     summ = 0
     print("-----Последние 6 свечек-----")
@@ -64,10 +59,10 @@ def fetch_volume(symbol, exchange, iteration_counter):
                 print("Bot is ready")
                 main.bot_messege_set(bot_message)
                 print("Bot has sent message")
-                sleep(2)
+                sleep(1)
                 bot_sent_message_flag = True
             else:
-                sleep(2)
+                sleep(1)
                 continue
         else:
             break

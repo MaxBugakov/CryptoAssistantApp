@@ -5,11 +5,14 @@ import BusinessLogic
 from telegram import Bot
 import ccxt
 
+# Глобальные переменные.
+button_click_status = False
+worker_thread = None
 
 # Контроллер бизнесс логики.
 def work():
     global button_click_status
-    iteration_counter = 0
+
     while True:
         try:
             if (button_click_status == False):
@@ -18,8 +21,7 @@ def work():
             BusinessLogic.check_network_connection()
             while button_click_status:
                 symbol = "BTC/USDT"
-                BusinessLogic.fetch_volume(symbol, exchange, iteration_counter)
-                iteration_counter += 1
+                BusinessLogic.fetch_volume(symbol, exchange)
         except Exception as e:
             # status_label.config(text=f"{e}", fg="red")
             print("--------------------------------------")
@@ -28,6 +30,8 @@ def work():
             print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
             print("--------------------------------------")
             bot_messege_set(f"Произошла ошибка: {e}")
+
+    bot_messege_set("Программа завершена")
 
 
 # Действия при нажатии на кнопку.
@@ -59,9 +63,6 @@ def on_closing():
     print("Программа закыта полностью")
 
 
-# Глобальные переменные.
-button_click_status = False
-worker_thread = None
 
 
 def bot_messege_set(textt):

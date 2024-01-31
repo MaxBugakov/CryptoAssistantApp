@@ -48,11 +48,10 @@ class App:
         self.win.mainloop()
 
 
+    # Показ информации о приложении.
     def show_info(self):
         msg = "Версия программы: 1.0\nТаймфрейм: 15 минут\nКриптовалютные пары:\nBTC/USDT\nETH/USDT\nBNB/USDT\nSOL/USDT\nXRP/USDT\nTRX/USDT\nADA/USDT\nDOT/USDT"
         mb.showinfo("Информация", msg)
-
-
 
 
     # Действия при нажатии на кнопку.

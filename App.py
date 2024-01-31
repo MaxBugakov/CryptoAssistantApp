@@ -82,7 +82,6 @@ class App:
                 if (self.button_click_status == False):
                     break
                 exchange = ccxt.binance()
-                BusinessLogic.check_network_connection()
                 while self.button_click_status:
                     symbol = "BTC/USDT"
                     self.fetch_volume(symbol, exchange)

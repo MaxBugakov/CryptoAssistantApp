@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.messagebox as mb
 import threading
 import ccxt
 import Bot
@@ -15,8 +16,6 @@ class App:
         # Поток обрабаьывающий логику.
         self.worker_thread = None
 
-        self.iterator = 0
-
         # Создание окна и графического интерфейса.
         self.win = tk.Tk()
         logo = tk.PhotoImage(file="logo.png")
@@ -29,11 +28,15 @@ class App:
         self.version_label = tk.Label(self.win, text="Version 1.0")
         self.version_label.place(relx=1.0, rely=1.0, anchor="se")
 
-        # Кнопка.
+        # Кнопка запуска программы.
         self.button = tk.Button(self.win, text="Start", width=18, height=3, font=("Arial", 18),
                                 bg="#a7b5d1", bd=3, activebackground="#ced8eb",
                                 highlightbackground="white", command=self.on_button_click)
         self.button.place(relx=0.5, rely=0.4, anchor="center")
+
+        # Кнопка информации.
+        self.btn_info = tk.Button(self.win, text="О программе",command=self.show_info)
+        self.btn_info.place(relx=0.118, rely=0.97, anchor="center")
 
         # Статус работы программы.
         self.status_label = tk.Label(self.win, text="",
@@ -43,6 +46,11 @@ class App:
 
         self.win.protocol("WM_DELETE_WINDOW", self.on_closing)
         self.win.mainloop()
+
+
+    def show_info(self):
+        msg = "Версия программы: 1.0\nТаймфрейм: 15 минут\nКриптовалютные пары:\nBTC/USDT\nETH/USDT\nBNB/USDT\nSOL/USDT\nXRP/USDT\nTRX/USDT\nADA/USDT\nDOT/USDT"
+        mb.showinfo("Информация", msg)
 
 
 
@@ -133,8 +141,7 @@ class App:
             if (candles[0][0] == last_time):
                 if (average_volume_5 * 3 <= volume and bot_sent_message_flag == False):
                     print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-                    print(
-                        f"BTC/USDT \n Средний объём: {average_volume_5}   Объём на последней свече: {volume} \n Объём вырос в {volume / average_volume_5} раза")
+                    print(f"BTC/USDT \n Средний объём: {average_volume_5}   Объём на последней свече: {volume} \n Объём вырос в {volume / average_volume_5} раза")
                     print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
                     bot_message = f"BTC/USDT\nВремя: {datetime.fromtimestamp(candles[0][0] / 1000.0)}\nСредний объём: {round(average_volume_5, 2)}\nОбъём последней свечи: {round(volume, 2)}\nОбъём вырос в {round(volume / average_volume_5, 2)} раза"
                     print("Bot is ready")

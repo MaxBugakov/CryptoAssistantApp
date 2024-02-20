@@ -14,7 +14,7 @@ class App:
     def __init__(self):
         # Статус нажатия на кнопку.
         self.button_click_status = False
-        # Поток обрабаьывающий логику.
+        # Поток обрабатывающий логику.
         self.worker_thread = None
 
         # Создание окна и графического интерфейса.
@@ -36,7 +36,7 @@ class App:
         self.button.place(relx=0.5, rely=0.4, anchor="center")
 
         # Кнопка информации.
-        self.btn_info = tk.Button(self.win, text="О программе",command=self.show_info)
+        self.btn_info = tk.Button(self.win, text="О программе", command=self.show_info)
         self.btn_info.place(relx=0.118, rely=0.97, anchor="center")
 
         # Статус работы программы.
@@ -45,13 +45,15 @@ class App:
                                      fg="green")
         self.status_label.place(relx=0.5, rely=0.57, anchor="center")
 
+        # Действия при закрытии окна.
         self.win.protocol("WM_DELETE_WINDOW", self.on_closing)
+
         self.win.mainloop()
 
 
     # Показ информации о приложении.
     def show_info(self):
-        msg = "Версия программы: 1.0\nТаймфрейм: 15 минут\nКриптовалютные пары:\nBTC/USDT\nETH/USDT\nBNB/USDT\nSOL/USDT\nXRP/USDT\nTRX/USDT\nADA/USDT\nDOT/USDT"
+        msg = "Версия программы: 1.0\nТаймфрейм: 15 минут\nКриптовалютные пары:\nBTC/USDT\nETH/USDT\nXRP/USDT\nLTC/USDT\nADA/USDT\nDOT/USDT\nLINK/USDT"
         mb.showinfo("Информация", msg)
 
 
@@ -81,14 +83,17 @@ class App:
         self.win.destroy()
         print("Программа закыта полностью")
 
+
+    # Контроллер асинхрона.
     def async_controller(self):
         asyncio.run(self.work_controller())
 
+
     # Контроллер бизнес логики.
     async def work_controller(self):
-        # Bot.send_message("Программа начала работать")
+        Bot.send_message("Программа начала работать")
         while True:
-            # try:
+            try:
                 if (self.button_click_status == False):
                     break
                 exchange = ccxt.binance()
@@ -97,22 +102,19 @@ class App:
                     tasks = [self.fetch_volume(symbol, exchange) for symbol in symbols]
                     await asyncio.gather(*tasks)
                     print("----------------------")
-                    # symbol = "BTC/USDT"
-                    # self.fetch_volume(symbol, exchange)
-            # except Exception as e:
+            except Exception as e:
             #     # status_label.config(text=f"{e}", fg="red")
             #     print("--------------------------------------")
             #     print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
             #     print(f"{e}")
             #     print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
             #     print("--------------------------------------")
-            #     Bot.send_message(f"Произошла ошибка: {e}")
+                Bot.send_message(f"Произошла ошибка: {e}")
 
-        # Bot.send_message("Программа завершена")
+        Bot.send_message("Программа завершена")
 
 
-    # Бизнес логика.
-    # Получение данных.
+    # Бизнес логика. Получение данных.
     async def fetch_volume(self, symbol, exchange):
         timeframe = '1m'
         summ = 0
@@ -139,6 +141,7 @@ class App:
         average_volume_5 = summ / 5.0
         # print(f"Средний объём: {average_volume_5}")
         print(f"{symbol} {datetime.fromtimestamp(last_time / 1000.0)} {test_volume}")
+
         bot_sent_message_flag = False
         while True:
             if (self.button_click_status == False):

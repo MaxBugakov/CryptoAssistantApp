@@ -5,7 +5,6 @@ import ccxt
 import Bot
 from time import sleep
 from datetime import datetime
-import asyncio
 
 
 # Приложение.
@@ -14,7 +13,7 @@ class App:
     def __init__(self):
         # Статус нажатия на кнопку.
         self.button_click_status = False
-        # Поток обрабатывающий логику.
+        # Поток обрабаьывающий логику.
         self.worker_thread = None
 
         # Создание окна и графического интерфейса.
@@ -36,7 +35,7 @@ class App:
         self.button.place(relx=0.5, rely=0.4, anchor="center")
 
         # Кнопка информации.
-        self.btn_info = tk.Button(self.win, text="О программе", command=self.show_info)
+        self.btn_info = tk.Button(self.win, text="О программе",command=self.show_info)
         self.btn_info.place(relx=0.118, rely=0.97, anchor="center")
 
         # Статус работы программы.
@@ -45,15 +44,13 @@ class App:
                                      fg="green")
         self.status_label.place(relx=0.5, rely=0.57, anchor="center")
 
-        # Действия при закрытии окна.
         self.win.protocol("WM_DELETE_WINDOW", self.on_closing)
-
         self.win.mainloop()
 
 
     # Показ информации о приложении.
     def show_info(self):
-        msg = "Версия программы: 1.0\nТаймфрейм: 15 минут\nКриптовалютные пары:\nBTC/USDT\nETH/USDT\nXRP/USDT\nLTC/USDT\nADA/USDT\nDOT/USDT\nLINK/USDT"
+        msg = "Версия программы: 1.0\nТаймфрейм: 15 минут\nКриптовалютные пары:\nBTC/USDT\nETH/USDT\nBNB/USDT\nSOL/USDT\nXRP/USDT\nTRX/USDT\nADA/USDT\nDOT/USDT"
         mb.showinfo("Информация", msg)
 
 
@@ -64,7 +61,7 @@ class App:
         if self.button_click_status:
             self.button.config(text="Stop")
             self.status_label.config(text="Программа работает...", fg="green")
-            self.worker_thread = threading.Thread(target=self.async_controller)
+            self.worker_thread = threading.Thread(target=self.work_controller)
             self.worker_thread.start()
         else:
             self.button.config(text="Start")
@@ -84,58 +81,51 @@ class App:
         print("Программа закыта полностью")
 
 
-    # Контроллер асинхрона.
-    def async_controller(self):
-        asyncio.run(self.work_controller())
-
-
     # Контроллер бизнес логики.
-    async def work_controller(self):
+    def work_controller(self):
         Bot.send_message("Программа начала работать")
         while True:
             try:
                 if (self.button_click_status == False):
                     break
                 exchange = ccxt.binance()
-                symbols = ['BTC/USDT', 'ETH/USDT', 'XRP/USDT', 'LTC/USDT', 'ADA/USDT', 'DOT/USDT', 'LINK/USDT']
                 while self.button_click_status:
-                    tasks = [self.fetch_volume(symbol, exchange) for symbol in symbols]
-                    await asyncio.gather(*tasks)
-                    print("----------------------")
+                    symbol = "BTC/USDT"
+                    self.fetch_volume(symbol, exchange)
             except Exception as e:
+                # status_label.config(text=f"{e}", fg="red")
+                print("--------------------------------------")
+                print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                print(f"{e}")
+                print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                print("--------------------------------------")
                 Bot.send_message(f"Произошла ошибка: {e}")
 
         Bot.send_message("Программа завершена")
 
 
-    # Бизнес логика. Получение данных.
-    async def fetch_volume(self, symbol, exchange):
+    # Бизнес логика.
+    # Получение данных.
+    def fetch_volume(self, symbol, exchange):
         timeframe = '1m'
         summ = 0
-        # print("-----Последние 6 свечек-----")
+        print("-----Последние 6 свечек-----")
         last_time = None
         last_volume = 0
-        test_volume = 0
         # bot_message = ""
         for i in range(6):
             time = exchange.milliseconds() - 60000 * (i + 1)
-            loop = asyncio.get_event_loop()
-            candles = await loop.run_in_executor(None, exchange.fetch_ohlcv, symbol, timeframe, time, 1)
-            # candles = await exchange.fetch_ohlcv(symbol, timeframe, since=time, limit=1)
+            candles = exchange.fetch_ohlcv(symbol, timeframe, since=time, limit=1)
             volume = candles[0][5]
             if (i != 0):
                 summ += volume
             if (i == 0):
                 last_time = candles[0][0]
                 last_volume = candles[0][5]
-            if (i == 1):
-                test_volume = candles[0][5]
-            # print(
-            #     f"{datetime.fromtimestamp(candles[0][0] / 1000.0)} {candles[0][1]} {candles[0][2]} {candles[0][3]} {candles[0][4]} {candles[0][5]}")
+            print(
+                f"{datetime.fromtimestamp(candles[0][0] / 1000.0)} {candles[0][1]} {candles[0][2]} {candles[0][3]} {candles[0][4]} {candles[0][5]}")
         average_volume_5 = summ / 5.0
-        # print(f"Средний объём: {average_volume_5}")
-        print(f"{symbol} {datetime.fromtimestamp(last_time / 1000.0)} {test_volume}")
-
+        print(f"Средний объём: {average_volume_5}")
         bot_sent_message_flag = False
         while True:
             if (self.button_click_status == False):
@@ -143,17 +133,16 @@ class App:
             time = exchange.milliseconds() - 60000 * 1
             candles = None
             while True:
-                loop = asyncio.get_event_loop()
-                candles = await loop.run_in_executor(None, exchange.fetch_ohlcv, symbol, timeframe, time, 1)
+                candles = exchange.fetch_ohlcv(symbol, timeframe, since=time, limit=1)
                 if (candles != None and len(candles) != 0):
                     break
             volume = candles[0][5]
             if (candles[0][0] == last_time):
                 if (average_volume_5 * 3 <= volume and bot_sent_message_flag == False):
-                    bot_message = f"{symbol}\nВремя: {datetime.fromtimestamp(candles[0][0] / 1000.0)}\nСредний объём: {round(average_volume_5, 2)}\nОбъём последней свечи: {round(volume, 2)}\nОбъём вырос в {round(volume / average_volume_5, 2)} раза"
                     print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-                    print(bot_message)
+                    print(f"BTC/USDT \n Средний объём: {average_volume_5}   Объём на последней свече: {volume} \n Объём вырос в {volume / average_volume_5} раза")
                     print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                    bot_message = f"BTC/USDT\nВремя: {datetime.fromtimestamp(candles[0][0] / 1000.0)}\nСредний объём: {round(average_volume_5, 2)}\nОбъём последней свечи: {round(volume, 2)}\nОбъём вырос в {round(volume / average_volume_5, 2)} раза"
                     print("Bot is ready")
                     Bot.send_message(bot_message)
                     print("Bot has sent message")

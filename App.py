@@ -110,7 +110,7 @@ class App:
 
     # Бизнес логика. Получение данных.
     async def fetch_volume(self, symbol, exchange):
-        timeframe = '1m'
+        timeframe = '5m'
         summ = 0
         # print("-----Последние 6 свечек-----")
         last_time = None
@@ -118,7 +118,7 @@ class App:
         test_volume = 0
         # bot_message = ""
         for i in range(6):
-            time = exchange.milliseconds() - 60000 * (i + 1)
+            time = exchange.milliseconds() - 60000 * (i + 1) * 5
             loop = asyncio.get_event_loop()
             candles = await loop.run_in_executor(None, exchange.fetch_ohlcv, symbol, timeframe, time, 1)
             # candles = await exchange.fetch_ohlcv(symbol, timeframe, since=time, limit=1)
@@ -140,7 +140,7 @@ class App:
         while True:
             if (self.button_click_status == False):
                 break
-            time = exchange.milliseconds() - 60000 * 1
+            time = exchange.milliseconds() - 60000 * 1 * 5
             candles = None
             while True:
                 loop = asyncio.get_event_loop()

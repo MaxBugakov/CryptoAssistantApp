@@ -4,8 +4,8 @@ from telegram import Bot
 
 # Данные бота.
 bot_token = '6500188821:AAFhCttcfBMmEdES3gjlwkWg9JcXrRHewSI'
-chat_id = '-4129403273'
-# chat_id_max = '1180171947'
+# chat_id = '-4129403273'
+chat_id = '1180171947'
 
 # Отправка сообщения от бота.
 def send_message(message):
